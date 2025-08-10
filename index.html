@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundromat Course Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+        }
+        
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            padding: 12px 16px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6c757d;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            min-width: 100px;
+        }
+        
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #495057;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .module-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .module-number {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .module-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .form-field {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .form-field label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        
+        .form-field input, .form-field select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .form-field input:focus, .form-field select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .result-box h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+        
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .result-unit {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .benchmark {
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .good { background: #28a745; }
+        .warning { background: #ffc107; }
+        .danger { background: #dc3545; }
+        
+        .course-note {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        .course-note strong {
+            color: #533f03;
+        }
+        
+        .calculate-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        
+        .calculate-btn:hover {
+            background: #218838;
+        }
+        
+        .formula-box {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .deal-comparison {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Laundromat Course Calculator</h1>
+            <p>Master the Calculations You'll Learn in Each Module</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="openTab(event, 'foundation')">Module 1</button>
+            <button class="nav-tab" onclick="openTab(event, 'dealanalysis')">Module 3</button>
+            <button class="nav-tab" onclick="openTab(event, 'startup')">Module 4</button>
+            <button class="nav-tab" onclick="openTab(event, 'marketing')">Module 5</button>
+            <button class="nav-tab" onclick="openTab(event, 'dropoff')">Module 6</button>
+            <button class="nav-tab" onclick="openTab(event, 'delivery')">Module 7</button>
+            <button class="nav-tab" onclick="openTab(event, 'commercial')">Module 8</button>
+            <button class="nav-tab" onclick="openTab(event, 'scaling')">Module 9</button>
+            <button class="nav-tab" onclick="openTab(event, 'exit')">Module 10</button>
+        </div>
+        
+        <div id="foundation" class="tab-content active">
+            <div class="module-header">
+                <div class="module-number">MODULE 1</div>
+                <h2 class="module-title">Laying the Foundation</h2>
+                <p>Core Investment Metrics & Recession-Resistance Calculations</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Purchase Price ($)</label>
+                    <input type="number" id="purchasePrice" placeholder="350000" value="350000" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Down Payment ($)</label>
+                    <input type="number" id="downPayment" placeholder="70000" value="70000" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Monthly Gross Revenue ($)</label>
+                    <input type="number" id="monthlyRevenue" placeholder="18500" value="18500" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Monthly Operating Expenses ($)</label>
+                    <input type="number" id="monthlyExpenses" placeholder="8950" value="8950" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Loan Interest Rate (%)</label>
+                    <input type="number" id="interestRate" step="0.1" placeholder="6.5" value="6.5" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Loan Term (Years)</label>
+                    <input type="number" id="loanTerm" placeholder="25" value="25" onchange="calculate()">
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Break-Even Analysis</h4>
+                    <div class="result-value" id="breakEvenRevenue">$0</div>
+                    <div class="result-unit">monthly revenue needed</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="breakEvenStatus"></span>
+                        <span id="breakEvenText">Monthly expenses</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>ROI Timeline</h4>
+                    <div class="result-value" id="roiTimeline">0.0</div>
+                    <div class="result-unit">years to recover investment</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="roiTimelineStatus"></span>
+                        <span id="roiTimelineText">Investment recovery period</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Recession Resistance Score</h4>
+                    <div class="result-value" id="recessionScore">0</div>
+                    <div class="result-unit">out of 10</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="recessionStatus"></span>
+                        <span id="recessionText">Economic downturn resistance</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Debt Service Coverage</h4>
+                    <div class="result-value" id="debtCoverage">0.0</div>
+                    <div class="result-unit">times covered</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="debtCoverageStatus"></span>
+                        <span id="debtCoverageText">Loan payment safety</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> These calculations demonstrate the 10 reasons laundromats are recession-resistant and help you understand your true investment risk vs. return profile.
+            </div>
+        </div>
+        
+        <div id="dealanalysis" class="tab-content">
+            <div class="module-header">
+                <div class="module-number">MODULE 3</div>
+                <h2 class="module-title">Analyzing the Deal Like a Pro</h2>
+                <p>Key Performance Indicators & Financial Analysis</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Square Footage</label>
+                    <input type="number" id="squareFootage" placeholder="2500" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Number of Washers</label>
+                    <input type="number" id="washers" placeholder="20" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Number of Dryers</label>
+                    <input type="number" id="dryers" placeholder="30" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Average Wash Price ($)</label>
+                    <input type="number" id="avgWashPrice" step="0.25" placeholder="3.50" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Average Dry Price ($)</label>
+                    <input type="number" id="avgDryPrice" step="0.25" placeholder="0.25" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Hours Open Per Day</label>
+                    <input type="number" id="hoursOpen" placeholder="16" onchange="calculate()">
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Turns Per Day (TPD)</h4>
+                    <div class="result-value" id="tpd">0.0</div>
+                    <div class="result-unit">turns/day</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="tpdStatus"></span>
+                        <span id="tpdText">Machine usage frequency</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Turns Per Week (TPW)</h4>
+                    <div class="result-value" id="tpw">0.0</div>
+                    <div class="result-unit">turns/week</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="tpwStatus"></span>
+                        <span id="tpwText">Weekly machine cycles</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Revenue Per Square Foot</h4>
+                    <div class="result-value" id="revenueSqFt">$0</div>
+                    <div class="result-unit">annually</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="revenueSqFtStatus"></span>
+                        <span id="revenueSqFtText">Space efficiency</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Cap Rate</h4>
+                    <div class="result-value" id="capRate">0.0</div>
+                    <div class="result-unit">%</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="capRateStatus"></span>
+                        <span id="capRateText">Property yield</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Cash-on-Cash Return</h4>
+                    <div class="result-value" id="cashOnCash">0.0</div>
+                    <div class="result-unit">%</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="cashOnCashStatus"></span>
+                        <span id="cashOnCashText">Return on down payment</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Price Per Pound</h4>
+                    <div class="result-value" id="pricePerPound">$0.00</div>
+                    <div class="result-unit">per pound processed</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="pppStatus"></span>
+                        <span id="pppText">Pricing efficiency</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <strong>Key Formulas:</strong><br>
+                TPD = Daily Revenue ÷ (Number of Washers × Average Wash Price)<br>
+                Cap Rate = (Annual NOI ÷ Purchase Price) × 100<br>
+                Revenue/Sq Ft = Annual Revenue ÷ Square Footage
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> These are the exact KPIs used in the sample deal walkthrough and Excel analysis. Master these to spot good deals and red flags instantly.
+            </div>
+        </div>
+        
+        <div id="startup" class="tab-content">
+            <div class="module-header">
+                <div class="module-number">MODULE 4</div>
+                <h2 class="module-title">The Startup Setup</h2>
+                <p>Equipment, Utilities & Operating Cost Calculations</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Equipment Investment ($)</label>
+                    <input type="number" id="equipmentCost" placeholder="150000" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Renovation Costs ($)</label>
+                    <input type="number" id="renovationCost" placeholder="25000" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Monthly Rent ($)</label>
+                    <input type="number" id="monthlyRent" placeholder="4500" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Monthly Utilities ($)</label>
+                    <input type="number" id="monthlyUtilities" placeholder="2200" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Monthly Insurance ($)</label>
+                    <input type="number" id="monthlyInsurance" placeholder="450" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Initial Inventory ($)</label>
+                    <input type="number" id="initialInventory" placeholder="3000" onchange="calculate()">
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Total Startup Investment</h4>
+                    <div class="result-value" id="totalStartup">$0</div>
+                    <div class="result-unit">initial capital needed</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="startupStatus"></span>
+                        <span id="startupText">Total investment required</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Equipment ROI</h4>
+                    <div class="result-value" id="equipmentROI">0.0</div>
+                    <div class="result-unit">years payback</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="equipROIStatus"></span>
+                        <span id="equipROIText">Equipment payback period</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Utility Cost Per Load</h4>
+                    <div class="result-value" id="utilityCostPerLoad">$0.00</div>
+                    <div class="result-unit">per wash cycle</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="utilityStatus"></span>
+                        <span id="utilityText">Utility efficiency</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Renovation Cost Per Sq Ft</h4>
+                    <div class="result-value" id="renovationPerSqFt">$0</div>
+                    <div class="result-unit">per square foot</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="renovationStatus"></span>
+                        <span id="renovationText">Buildout efficiency</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> These calculations help you negotiate equipment financing, budget for renovations, and understand true startup costs before you commit.
+            </div>
+        </div>
+        
+        <div id="marketing" class="tab-content">
+            <div class="module-header">
+                <div class="module-number">MODULE 5</div>
+                <h2 class="module-title">Laundromat Marketing 101</h2>
+                <p>Customer Acquisition & Retention Metrics</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Monthly Marketing Budget ($)</label>
+                    <input type="number" id="marketingBudget" placeholder="500" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>New Customers Per Month</label>
+                    <input type="number" id="newCustomers" placeholder="25" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Average Customer Spend ($)</label>
+                    <input type="number" id="avgCustomerSpend" placeholder="12" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Customer Visits Per Month</label>
+                    <input type="number" id="customerVisits" placeholder="4" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Customer Retention (Months)</label>
+                    <input type="number" id="customerRetention" placeholder="18" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Loyalty Program Discount (%)</label>
+                    <input type="number" id="loyaltyDiscount" placeholder="10" onchange="calculate()">
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Customer Acquisition Cost (CAC)</h4>
+                    <div class="result-value" id="cac">$0</div>
+                    <div class="result-unit">per new customer</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="cacStatus"></span>
+                        <span id="cacText">Cost to acquire</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Customer Lifetime Value (CLV)</h4>
+                    <div class="result-value" id="clv">$0</div>
+                    <div class="result-unit">total customer value</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="clvStatus"></span>
+                        <span id="clvText">Lifetime revenue</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Marketing ROI</h4>
+                    <div class="result-value" id="marketingROI">0.0</div>
+                    <div class="result-unit">:1 return</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="marketingROIStatus"></span>
+                        <span id="marketingROIText">Marketing effectiveness</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Loyalty Program Break-Even</h4>
+                    <div class="result-value" id="loyaltyBreakeven">0.0</div>
+                    <div class="result-unit">% increase needed</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="loyaltyStatus"></span>
+                        <span id="loyaltyText">Visit frequency increase</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> These metrics help you budget marketing spend, design loyalty programs, and track the effectiveness of your brand-building efforts.
+            </div>
+        </div>
+        
+        <div id="dropoff" class="tab-content">
+            <div class="module-header">
+                <div class="module-number">MODULE 6</div>
+                <h2 class="module-title">Creating an Irresistible Drop-Off Service</h2>
+                <p>Pricing, Labor & Profit Calculations</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Drop-Off Price Per Pound ($)</label>
+                    <input type="number" id="dropoffPrice" step="0.10" placeholder="1.50" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Average Order Size (Pounds)</label>
+                    <input type="number" id="avgOrderSize" placeholder="15" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Pay Structure</label>
+                    <select id="payStructure" onchange="calculate()">
+                        <option value="commission">Commission Per Pound</option>
+                        <option value="hourly">Hourly Rate</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label>Commission Per Pound ($)</label>
+                    <input type="number" id="commissionPerPound" step="0.01" placeholder="0.35" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Staff Hourly Rate ($) - If Hourly</label>
+                    <input type="number" id="staffHourly" placeholder="15" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Minutes Per Pound Processing</label>
+                    <input type="number" id="minutesPerPound" placeholder="3" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Supply Cost Per Pound ($)</label>
+                    <input type="number" id="supplyCost" step="0.01" placeholder="0.15" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Upsell Rate (%)</label>
+                    <input type="number" id="upsellRate" placeholder="25" onchange="calculate()">
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Drop-Off Profit Margin</h4>
+                    <div class="result-value" id="dropoffMargin">0.0</div>
+                    <div class="result-unit">%</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="dropoffMarginStatus"></span>
+                        <span id="dropoffMarginText">Service profitability</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Labor Cost Per Pound</h4>
+                    <div class="result-value" id="laborPerPound">$0.00</div>
+                    <div class="result-unit">commission or hourly cost</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="laborPoundStatus"></span>
+                        <span id="laborPoundText">Processing cost efficiency</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Average Order Value</h4>
+                    <div class="result-value" id="avgOrderValue">$0.00</div>
+                    <div class="result-unit">per drop-off order</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="orderValueStatus"></span>
+                        <span id="orderValueText">Revenue per order</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Upsell Revenue Impact</h4>
+                    <div class="result-value" id="upsellImpact">0.0</div>
+                    <div class="result-unit">% revenue increase</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="upsellStatus"></span>
+                        <span id="upsellText">Additional service revenue</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <strong>Pay Structure Formulas:</strong><br>
+                <strong>Commission:</strong> Labor Cost = Commission per Pound × Pounds Processed<br>
+                <strong>Hourly:</strong> Labor Cost = (Hourly Rate × Minutes per Pound) ÷ 60<br>
+                <strong>Profit Margin:</strong> (Price per Pound - Labor Cost - Supply Cost) ÷ Price per Pound × 100
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> Use these calculations to price your drop-off service for maximum profit. Commission-based pay incentivizes productivity while hourly rates provide predictable costs. Learn to create staff training metrics that ensure profitability.
+            </div>
+        </div>
+        
+        <div id="delivery" class="tab-content">
+            <div class="module-header">
+                <div class="module-number">MODULE 7</div>
+                <h2 class="module-title">Growing with Pick-Up & Delivery</h2>
+                <p>Route Optimization & Delivery Economics</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Drop-off Price Per Pound ($)</label>
+                    <input type="number" id="dropoffPriceDelivery" step="0.10" placeholder="1.50" onchange="calculate()">
+                    <small style="color: #6c757d;">Your in-store drop-off rate</small>
+                </div>
+                
+                <div class="form-field">
+                    <label>Delivery Price Per Pound ($)</label>
+                    <input type="number" id="deliveryPricePerPound" step="0.10" placeholder="2.00" onchange="calculate()">
+                    <small style="color: #6c757d;">Higher rate for pickup & delivery</small>
+                </div>
+                
+                <div class="form-field">
+                    <label>Driver Hourly Rate ($)</label>
+                    <input type="number" id="driverRate" placeholder="18" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Vehicle Cost Per Mile ($)</label>
+                    <input type="number" id="vehicleCostPerMile" step="0.01" placeholder="0.56" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Average Delivery Distance (Miles)</label>
+                    <input type="number" id="avgDeliveryDistance" placeholder="3.5" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Deliveries Per Hour</label>
+                    <input type="number" id="deliveriesPerHour" placeholder="4" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Average Delivery Order Size (Pounds)</label>
+                    <input type="number" id="deliveryOrderSize" placeholder="18" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Minimum Order Size (Pounds)</label>
+                    <input type="number" id="minOrderSize" placeholder="15" onchange="calculate()">
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Delivery Premium</h4>
+                    <div class="result-value" id="deliveryPremium">$0.00</div>
+                    <div class="result-unit">extra per pound</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="deliveryPremiumStatus"></span>
+                        <span id="deliveryPremiumText">Markup over drop-off</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Delivery Cost Per Order</h4>
+                    <div class="result-value" id="deliveryCost">$0.00</div>
+                    <div class="result-unit">logistics cost</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="deliveryCostStatus"></span>
+                        <span id="deliveryCostText">Driver + vehicle costs</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Average Order Revenue</h4>
+                    <div class="result-value" id="avgOrderRevenue">$0.00</div>
+                    <div class="result-unit">per delivery order</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="orderRevenueStatus"></span>
+                        <span id="orderRevenueText">Total order value</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Delivery Profit Per Order</h4>
+                    <div class="result-value" id="deliveryProfit">$0.00</div>
+                    <div class="result-unit">net profit</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="deliveryProfitStatus"></span>
+                        <span id="deliveryProfitText">After all costs</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Delivery Profit Margin</h4>
+                    <div class="result-value" id="deliveryMargin">0.0</div>
+                    <div class="result-unit">%</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="deliveryMarginStatus"></span>
+                        <span id="deliveryMarginText">Overall profitability</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Cost Per Pound Delivered</h4>
+                    <div class="result-value" id="costPerPoundDelivered">$0.00</div>
+                    <div class="result-unit">total cost per lb</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="costPerPoundStatus"></span>
+                        <span id="costPerPoundText">Service + delivery cost</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <strong>Per-Pound Delivery Model:</strong><br>
+                <strong>Delivery Premium:</strong> Delivery Price per Pound - Drop-off Price per Pound<br>
+                <strong>Delivery Cost:</strong> (Driver Rate ÷ Deliveries per Hour) + (Vehicle Cost × Round Trip Miles)<br>
+                <strong>Profit Margin:</strong> (Total Revenue - Service Costs - Delivery Costs) ÷ Total Revenue × 100
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> Many operators use per-pound pricing instead of separate delivery fees - it's simpler for customers and often more profitable. Learn to set the right premium to cover logistics costs while staying competitive.
+            </div>
+        </div>
+        
+        <div id="commercial" class="tab-content">
+            <div class="module-header">
+                <div class="module-number">MODULE 8</div>
+                <h2 class="module-title">Securing Commercial Contracts</h2>
+                <p>B2B Pricing & Volume Analysis</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Commercial Rate Per Pound ($)</label>
+                    <input type="number" id="commercialRate" step="0.10" placeholder="1.25" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Minimum Monthly Volume (Pounds)</label>
+                    <input type="number" id="minVolume" placeholder="500" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Contract Length (Months)</label>
+                    <input type="number" id="contractLength" placeholder="12" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Client Type</label>
+                    <select id="clientType" onchange="calculate()">
+                        <option value="gym">Gym/Fitness Center</option>
+                        <option value="salon">Salon/Spa</option>
+                        <option value="airbnb">Airbnb Host</option>
+                        <option value="hotel">Hotel/Motel</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="school">School/Daycare</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label>Pickup/Delivery Required</label>
+                    <select id="deliveryRequired" onchange="calculate()">
+                        <option value="no">No - Client drops off</option>
+                        <option value="yes">Yes - You pickup/deliver</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label>Payment Terms</label>
+                    <select id="paymentTerms" onchange="calculate()">
+                        <option value="net15">Net 15 days</option>
+                        <option value="net30">Net 30 days</option>
+                        <option value="prepaid">Prepaid monthly</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Commercial Contract Value</h4>
+                    <div class="result-value" id="contractValue">$0</div>
+                    <div class="result-unit">annual value</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="contractValueStatus"></span>
+                        <span id="contractValueText">Total contract worth</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Monthly Contract Revenue</h4>
+                    <div class="result-value" id="monthlyContractRevenue">$0</div>
+                    <div class="result-unit">guaranteed monthly</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="monthlyRevenueStatus"></span>
+                        <span id="monthlyRevenueText">Predictable income</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Commercial Profit Margin</h4>
+                    <div class="result-value" id="commercialMargin">0.0</div>
+                    <div class="result-unit">%</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="commercialMarginStatus"></span>
+                        <span id="commercialMarginText">Contract profitability</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Client Quality Score</h4>
+                    <div class="result-value" id="clientScore">0</div>
+                    <div class="result-unit">out of 10</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="clientScoreStatus"></span>
+                        <span id="clientScoreText">Client attractiveness</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <strong>Commercial Contract Analysis:</strong><br>
+                <strong>Annual Contract Value:</strong> Commercial Rate × Monthly Volume × Contract Length<br>
+                <strong>Monthly Revenue:</strong> Commercial Rate × Monthly Volume<br>
+                <strong>Profit Margin:</strong> (Commercial Rate - Cost per Pound) ÷ Commercial Rate × 100
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> Focus on simple, profitable commercial contracts. Evaluate clients based on contract value, payment terms, and service requirements. Keep pricing straightforward to win and retain business.
+            </div>
+        </div>
+        
+        <div id="scaling" class="tab-content">
+            <div class="module-header">
+                <div class="module-number">MODULE 9</div>
+                <h2 class="module-title">Scaling Smartly</h2>
+                <p>Growth Analysis & Multi-Location Economics</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Manager Monthly Salary ($)</label>
+                    <input type="number" id="managerSalary" placeholder="4000" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Owner Hours Per Week</label>
+                    <input type="number" id="ownerHours" placeholder="30" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Owner Hourly Value ($)</label>
+                    <input type="number" id="ownerHourlyValue" placeholder="50" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Second Location Investment ($)</label>
+                    <input type="number" id="secondLocationCost" placeholder="400000" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Second Location Monthly NOI ($)</label>
+                    <input type="number" id="secondLocationNOI" placeholder="8000" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Current Location Monthly NOI ($)</label>
+                    <input type="number" id="currentLocationNOI" placeholder="9500" onchange="calculate()">
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Manager ROI</h4>
+                    <div class="result-value" id="managerROI">0.0</div>
+                    <div class="result-unit">% monthly return</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="managerROIStatus"></span>
+                        <span id="managerROIText">Management investment</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Second Location Payback</h4>
+                    <div class="result-value" id="multiLocationPayback">0.0</div>
+                    <div class="result-unit">years</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="multiPaybackStatus"></span>
+                        <span id="multiPaybackText">Investment recovery</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Portfolio Income Growth</h4>
+                    <div class="result-value" id="portfolioGrowth">0.0</div>
+                    <div class="result-unit">% increase</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="portfolioStatus"></span>
+                        <span id="portfolioText">Total income boost</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Owner Time Freed Up</h4>
+                    <div class="result-value" id="ownerTimeSaved">0.0</div>
+                    <div class="result-unit">hours/week</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="timeSavedStatus"></span>
+                        <span id="timeSavedText">Hours for growth/family</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <strong>Scaling Analysis:</strong><br>
+                <strong>Manager ROI:</strong> (Owner Time Value - Manager Salary) ÷ Manager Salary × 100<br>
+                <strong>Payback Period:</strong> Investment Cost ÷ Annual NOI<br>
+                <strong>Portfolio Growth:</strong> Second Location NOI ÷ Current Location NOI × 100
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> Focus on clear scaling decisions: hire a manager when ROI exceeds 20%, expand when payback is under 5 years. Track how growth increases your total portfolio income and frees up your time.
+            </div>
+        </div>
+        
+        <div id="exit" class="tab-content">
+            <div class="module-header">
+                <div class="module-number">MODULE 10</div>
+                <h2 class="module-title">Profit Maximizers & Exit Strategy</h2>
+                <p>Valuation, Tax Benefits & Exit Planning</p>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Property Ownership</label>
+                    <select id="propertyOwnership" onchange="toggleExitFields(); calculate();">
+                        <option value="own">I Own the Property</option>
+                        <option value="lease">I Lease the Property</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label>Years in Business</label>
+                    <input type="number" id="yearsOwned" placeholder="5" value="5" onchange="calculate()">
+                </div>
+                
+                <div class="form-field" id="appreciationRateField">
+                    <label>Annual Property Appreciation (%)</label>
+                    <input type="number" id="appreciationRate" step="0.1" placeholder="3.5" value="3.5" onchange="calculate()">
+                    <small style="color: #6c757d;">Only applies if you own the property</small>
+                </div>
+                
+                <div class="form-field" id="leaseTermField" style="display: none;">
+                    <label>Remaining Lease Term (Years)</label>
+                    <input type="number" id="remainingLeaseTerm" placeholder="10" value="10" onchange="calculate()">
+                    <small style="color: #6c757d;">Years left on your lease</small>
+                </div>
+                
+                <div class="form-field">
+                    <label>Sale Multiple (x Annual NOI)</label>
+                    <input type="number" id="saleMultiple" step="0.1" placeholder="4.5" value="4.5" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Selling Costs (%)</label>
+                    <input type="number" id="sellingCosts" step="0.1" placeholder="8" value="8" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Annual Vending Revenue ($)</label>
+                    <input type="number" id="vendingRevenue" placeholder="3600" value="3600" onchange="calculate()">
+                </div>
+                
+                <div class="form-field">
+                    <label>Annual Depreciation Benefit ($)</label>
+                    <input type="number" id="depreciationBenefit" placeholder="15000" value="15000" onchange="calculate()">
+                </div>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-box">
+                    <h4>Business Valuation</h4>
+                    <div class="result-value" id="businessValuation">$0</div>
+                    <div class="result-unit">current worth</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="valuationStatus"></span>
+                        <span id="valuationText">Business value</span>
+                    </div>
+                </div>
+                
+                <div class="result-box" id="realEstateCard">
+                    <h4>Real Estate Appreciation</h4>
+                    <div class="result-value" id="realEstateAppreciation">$0</div>
+                    <div class="result-unit">property gain</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="appreciationStatus"></span>
+                        <span id="appreciationText">Property value increase</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Total ROI</h4>
+                    <div class="result-value" id="totalROI">0.0</div>
+                    <div class="result-unit">% total return</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="totalROIStatus"></span>
+                        <span id="totalROIText">Investment performance</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Annual Tax Savings</h4>
+                    <div class="result-value" id="taxSavings">$0</div>
+                    <div class="result-unit">tax benefit</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="taxSavingsStatus"></span>
+                        <span id="taxSavingsText">Depreciation value</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Vending ROI</h4>
+                    <div class="result-value" id="vendingROI">0.0</div>
+                    <div class="result-unit">% return</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="vendingROIStatus"></span>
+                        <span id="vendingROIText">Additional income stream</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h4>Net Exit Proceeds</h4>
+                    <div class="result-value" id="netExitProceeds">$0</div>
+                    <div class="result-unit">after all costs</div>
+                    <div class="benchmark">
+                        <span class="status-dot good" id="exitProceedsStatus"></span>
+                        <span id="exitProceedsText">Final payout</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="course-note">
+                <strong>Course Connection:</strong> Your exit strategy depends heavily on whether you own or lease the property. <strong>Property owners</strong> have two potential assets (business + real estate appreciation), while <strong>lease operators</strong> focus purely on business value and lease transferability. Both models can be highly profitable - leasing often requires less capital upfront and eliminates property management responsibilities.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, navtabs;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            navtabs = document.getElementsByClassName("nav-tab");
+            for (i = 0; i < navtabs.length; i++) {
+                navtabs[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        
+        function toggleExitFields() {
+            try {
+                const ownershipElement = document.getElementById('propertyOwnership');
+                if (!ownershipElement) return;
+                
+                const ownership = ownershipElement.value;
+                const appreciationField = document.getElementById('appreciationRateField');
+                const leaseField = document.getElementById('leaseTermField');
+                const realEstateCard = document.getElementById('realEstateCard');
+                
+                if (ownership === 'lease') {
+                    if (appreciationField) appreciationField.style.display = 'none';
+                    if (leaseField) leaseField.style.display = 'block';
+                    if (realEstateCard) realEstateCard.style.display = 'none';
+                } else {
+                    if (appreciationField) appreciationField.style.display = 'block';
+                    if (leaseField) leaseField.style.display = 'none';
+                    if (realEstateCard) realEstateCard.style.display = 'block';
+                }
+            } catch (error) {
+                console.warn('Toggle fields error:', error);
+            }
+        }
+        
+        function getValue(id) {
+            try {
+                const element = document.getElementById(id);
+                if (!element) return 0;
+                const value = parseFloat(element.value);
+                return isNaN(value) ? 0 : value;
+            } catch (error) {
+                console.warn('Error getting value for element:', id);
+                return 0;
+            }
+        }
+        
+        function formatMoney(amount) {
+            if (amount >= 1000000) {
+                return '$' + (amount / 1000000).toFixed(1) + 'M';
+            } else if (amount >= 1000) {
+                return '$' + (amount / 1000).toFixed(0) + 'K';
+            } else {
+                return '$' + Math.round(amount);
+            }
+        }
+        
+        function updateResult(id, value, isPercent = false, isMoney = false) {
+            const element = document.getElementById(id);
+            if (element) {
+                if (isMoney) {
+                    element.textContent = formatMoney(value);
+                } else if (isPercent) {
+                    element.textContent = value.toFixed(1);
+                } else {
+                    element.textContent = value.toFixed(1);
+                }
+            }
+        }
+        
+        function updateStatus(id, value, goodThreshold, warningThreshold, isReverse = false) {
+            const statusElement = document.getElementById(id + 'Status');
+            const textElement = document.getElementById(id + 'Text');
+            
+            if (statusElement && textElement) {
+                let status, text;
+                
+                if (isReverse) {
+                    if (value <= goodThreshold) {
+                        status = 'good';
+                        text = 'Excellent';
+                    } else if (value <= warningThreshold) {
+                        status = 'warning';
+                        text = 'Review';
+                    } else {
+                        status = 'danger';
+                        text = 'Concern';
+                    }
+                } else {
+                    if (value >= goodThreshold) {
+                        status = 'good';
+                        text = 'Excellent';
+                    } else if (value >= warningThreshold) {
+                        status = 'warning';
+                        text = 'Review';
+                    } else {
+                        status = 'danger';
+                        text = 'Concern';
+                    }
+                }
+                
+                statusElement.className = 'status-dot ' + status;
+                textElement.textContent = text;
+            }
+        }
+        
+        function calculate() {
+            // Get base values
+            const purchasePrice = getValue('purchasePrice');
+            const downPayment = getValue('downPayment');
+            const monthlyRevenue = getValue('monthlyRevenue');
+            const monthlyExpenses = getValue('monthlyExpenses');
+            const interestRate = getValue('interestRate') / 100;
+            const loanTerm = getValue('loanTerm');
+            const squareFootage = getValue('squareFootage');
+            const washers = getValue('washers');
+            const avgWashPrice = getValue('avgWashPrice');
+            
+            // Calculate basic metrics
+            const loanAmount = purchasePrice - downPayment;
+            const monthlyRate = interestRate / 12;
+            const numPayments = loanTerm * 12;
+            const monthlyPayment = loanAmount > 0 ? (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1) : 0;
+            
+            const noi = monthlyRevenue - monthlyExpenses;
+            const annualNOI = noi * 12;
+            const cashFlow = noi - monthlyPayment;
+            
+            // Module 1 - Foundation
+            const breakEvenRevenue = monthlyExpenses + monthlyPayment;
+            const roiTimeline = downPayment > 0 ? downPayment / (cashFlow * 12) : 0;
+            const recessionScore = Math.min(10, Math.max(0, 
+                (noi > 0 ? 2 : 0) + 
+                (monthlyRevenue > 15000 ? 2 : monthlyRevenue > 10000 ? 1 : 0) +
+                (squareFootage > 2000 ? 2 : squareFootage > 1500 ? 1 : 0) +
+                (washers > 15 ? 2 : washers > 10 ? 1 : 0) +
+                (avgWashPrice > 3 ? 2 : avgWashPrice > 2.5 ? 1 : 0)
+            ));
+            const debtCoverage = monthlyPayment > 0 ? noi / monthlyPayment : 0;
+            
+            // Module 3 - Deal Analysis
+            const capRate = purchasePrice > 0 ? (annualNOI / purchasePrice) * 100 : 0;
+            const cashOnCash = downPayment > 0 ? (cashFlow * 12 / downPayment) * 100 : 0;
+            const revenueSqFt = squareFootage > 0 ? (monthlyRevenue * 12) / squareFootage : 0;
+            const tpd = washers > 0 && avgWashPrice > 0 ? (monthlyRevenue / 30) / (washers * avgWashPrice) : 0;
+            const tpw = tpd * 7;
+            const pricePerPound = avgWashPrice > 0 ? avgWashPrice / 8 : 0; // Assuming 8 lbs per load
+            
+            // Module 4 - Startup
+            const equipmentCost = getValue('equipmentCost');
+            const renovationCost = getValue('renovationCost');
+            const initialInventory = getValue('initialInventory');
+            const totalStartup = equipmentCost + renovationCost + initialInventory + downPayment;
+            const equipmentROI = equipmentCost > 0 && annualNOI > 0 ? equipmentCost / annualNOI : 0;
+            const utilityCostPerLoad = getValue('monthlyUtilities') > 0 && monthlyRevenue > 0 ? (getValue('monthlyUtilities') * avgWashPrice) / monthlyRevenue : 0;
+            const renovationPerSqFt = squareFootage > 0 ? renovationCost / squareFootage : 0;
+            
+            // Module 5 - Marketing
+            const marketingBudget = getValue('marketingBudget');
+            const newCustomers = getValue('newCustomers');
+            const avgCustomerSpend = getValue('avgCustomerSpend');
+            const customerVisits = getValue('customerVisits');
+            const customerRetention = getValue('customerRetention');
+            const loyaltyDiscount = getValue('loyaltyDiscount');
+            
+            const cac = newCustomers > 0 ? marketingBudget / newCustomers : 0;
+            const clv = avgCustomerSpend * customerVisits * customerRetention;
+            const marketingROI = marketingBudget > 0 ? (newCustomers * clv) / marketingBudget : 0;
+            const loyaltyBreakeven = loyaltyDiscount > 0 ? (loyaltyDiscount / (100 - loyaltyDiscount)) * 100 : 0;
+            
+            // Module 6 - Drop-off
+            const dropoffPrice = getValue('dropoffPrice');
+            const avgOrderSize = getValue('avgOrderSize');
+            const payStructure = document.getElementById('payStructure') ? document.getElementById('payStructure').value : 'commission';
+            const commissionPerPound = getValue('commissionPerPound');
+            const staffHourly = getValue('staffHourly');
+            const minutesPerPound = getValue('minutesPerPound');
+            const supplyCost = getValue('supplyCost');
+            const upsellRate = getValue('upsellRate');
+            
+            let laborPerPound;
+            if (payStructure === 'commission') {
+                laborPerPound = commissionPerPound;
+            } else {
+                laborPerPound = staffHourly * (minutesPerPound / 60);
+            }
+            
+            const totalCostPerPound = laborPerPound + supplyCost;
+            const dropoffMargin = dropoffPrice > 0 ? ((dropoffPrice - totalCostPerPound) / dropoffPrice) * 100 : 0;
+            const avgOrderValue = dropoffPrice * avgOrderSize;
+            const upsellImpact = upsellRate;
+            
+            // Module 7 - Delivery
+            const dropoffPriceDelivery = getValue('dropoffPriceDelivery') || getValue('dropoffPrice') || 1.50; // Default fallback
+            const deliveryPricePerPound = getValue('deliveryPricePerPound') || 2.00; // Default fallback
+            const driverRate = getValue('driverRate') || 18;
+            const vehicleCostPerMile = getValue('vehicleCostPerMile') || 0.56;
+            const avgDeliveryDistance = getValue('avgDeliveryDistance') || 3.5;
+            const deliveriesPerHour = getValue('deliveriesPerHour') || 4;
+            const deliveryOrderSize = getValue('deliveryOrderSize') || 18;
+            const minOrderSize = getValue('minOrderSize') || 15;
+            
+            // Calculate delivery costs
+            const roundTripMiles = avgDeliveryDistance * 2;
+            const driverCostPerDelivery = deliveriesPerHour > 0 ? driverRate / deliveriesPerHour : 0;
+            const vehicleCostPerDelivery = vehicleCostPerMile * roundTripMiles;
+            const deliveryCost = driverCostPerDelivery + vehicleCostPerDelivery;
+            
+            // Calculate pricing and profits
+            const deliveryPremium = deliveryPricePerPound - dropoffPriceDelivery;
+            const avgOrderRevenue = deliveryPricePerPound * deliveryOrderSize;
+            
+            // Use a simple cost structure for delivery calculations
+            const deliveryBaseCost = 0.80; // Default cost if Module 6 not filled
+            const actualCostPerPound = totalCostPerPound > 0 ? totalCostPerPound : deliveryBaseCost;
+            const totalServiceCost = deliveryOrderSize * actualCostPerPound;
+            const totalCostPerOrder = totalServiceCost + deliveryCost;
+            const deliveryProfit = avgOrderRevenue - totalCostPerOrder;
+            const deliveryMargin = avgOrderRevenue > 0 ? (deliveryProfit / avgOrderRevenue) * 100 : 0;
+            const costPerPoundDelivered = deliveryOrderSize > 0 ? totalCostPerOrder / deliveryOrderSize : 0;
+            
+            // Module 8 - Commercial
+            const commercialRate = getValue('commercialRate');
+            const minVolume = getValue('minVolume');
+            const volumeThreshold = getValue('volumeThreshold');
+            const volumeDiscount = getValue('volumeDiscount');
+            const contractLength = getValue('contractLength');
+            
+            // Module 8 - Commercial
+            const commercialRateValue = getValue('commercialRate') || 1.25;
+            const minVolumeValue = getValue('minVolume') || 500;
+            const contractLengthValue = getValue('contractLength') || 12;
+            const clientType = document.getElementById('clientType') ? document.getElementById('clientType').value : 'gym';
+            const deliveryRequired = document.getElementById('deliveryRequired') ? document.getElementById('deliveryRequired').value : 'no';
+            const paymentTerms = document.getElementById('paymentTerms') ? document.getElementById('paymentTerms').value : 'net30';
+            
+            const contractValue = commercialRateValue * minVolumeValue * contractLengthValue;
+            const monthlyContractRevenue = commercialRateValue * minVolumeValue;
+            
+            // Calculate commercial profit margin (using base cost structure)
+            const commercialBaseCost = 0.80; // Base cost for commercial processing
+            const actualCommercialCost = totalCostPerPound > 0 ? totalCostPerPound : commercialBaseCost;
+            const commercialMargin = commercialRateValue > 0 ? ((commercialRateValue - actualCommercialCost) / commercialRateValue) * 100 : 0;
+            
+            // Enhanced client scoring
+            let clientScore = 0;
+            
+            // Contract value scoring (0-3 points)
+            if (contractValue > 50000) clientScore += 3;
+            else if (contractValue > 25000) clientScore += 2;
+            else if (contractValue > 15000) clientScore += 1;
+            
+            // Contract length scoring (0-2 points)
+            if (contractLengthValue >= 24) clientScore += 2;
+            else if (contractLengthValue >= 12) clientScore += 1;
+            
+            // Volume scoring (0-3 points)
+            if (minVolumeValue >= 2000) clientScore += 3;
+            else if (minVolumeValue >= 1000) clientScore += 2;
+            else if (minVolumeValue >= 500) clientScore += 1;
+            
+            // Payment terms scoring (0-1 points)
+            if (paymentTerms === 'prepaid') clientScore += 1;
+            
+            // Delivery requirement scoring (0-1 points)
+            if (deliveryRequired === 'no') clientScore += 1;
+            
+            clientScore = Math.min(10, clientScore);
+            
+            // Module 9 - Scaling
+            const managerSalaryValue = getValue('managerSalary') || 4000;
+            const ownerHoursValue = getValue('ownerHours') || 30;
+            const ownerHourlyValueAmount = getValue('ownerHourlyValue') || 50;
+            const secondLocationCostValue = getValue('secondLocationCost') || 400000;
+            const secondLocationNOIValue = getValue('secondLocationNOI') || 8000;
+            const currentLocationNOIValue = getValue('currentLocationNOI') || 9500;
+            
+            const ownerTimeValue = ownerHoursValue * ownerHourlyValueAmount * 4.33;
+            const managerROI = managerSalaryValue > 0 ? ((ownerTimeValue - managerSalaryValue) / managerSalaryValue) * 100 : 0;
+            const multiLocationPayback = secondLocationCostValue > 0 && secondLocationNOIValue > 0 ? secondLocationCostValue / (secondLocationNOIValue * 12) : 0;
+            const portfolioGrowth = currentLocationNOIValue > 0 ? (secondLocationNOIValue / currentLocationNOIValue) * 100 : 0;
+            const ownerTimeSaved = managerSalaryValue > 0 ? ownerHoursValue * 0.8 : 0; // Assume manager handles 80% of owner tasks
+            
+            // Module 10 - Exit
+            const yearsOwned = getValue('yearsOwned') || 5; // Default to 5 years
+            const appreciationRate = getValue('appreciationRate') / 100 || 0.035; // Default 3.5%
+            const saleMultiple = getValue('saleMultiple') || 4.5; // Default 4.5x
+            const sellingCosts = getValue('sellingCosts') / 100 || 0.08; // Default 8%
+            const vendingRevenue = getValue('vendingRevenue') || 3600; // Default $3600
+            const depreciationBenefit = getValue('depreciationBenefit') || 15000; // Default $15K
+            const propertyOwnership = document.getElementById('propertyOwnership') ? document.getElementById('propertyOwnership').value : 'own';
+            
+            // Use annualNOI if available, otherwise create a default based on monthly revenue
+            let calculatedAnnualNOI = annualNOI;
+            if (calculatedAnnualNOI <= 0 && monthlyRevenue > 0) {
+                // If no NOI calculated, estimate it as 50% of revenue minus expenses
+                const estimatedMonthlyNOI = monthlyRevenue * 0.5;
+                calculatedAnnualNOI = estimatedMonthlyNOI * 12;
+            }
+            if (calculatedAnnualNOI <= 0) {
+                calculatedAnnualNOI = 100000; // Default annual NOI for calculation purposes
+            }
+            
+            const businessValuation = calculatedAnnualNOI * saleMultiple;
+            
+            // Only calculate real estate appreciation if they own the property
+            let realEstateAppreciation = 0;
+            let totalValue = businessValuation;
+            
+            if (propertyOwnership === 'own' && purchasePrice > 0 && yearsOwned > 0) {
+                realEstateAppreciation = purchasePrice * Math.pow(1 + appreciationRate, yearsOwned) - purchasePrice;
+                totalValue = businessValuation + purchasePrice + realEstateAppreciation;
+            }
+            
+            const sellingCostAmount = totalValue * sellingCosts;
+            const netExitProceeds = totalValue - sellingCostAmount;
+            
+            // Calculate ROI based on ownership type
+            let totalROI = 0;
+            if (propertyOwnership === 'own' && downPayment > 0) {
+                totalROI = ((netExitProceeds - downPayment) / downPayment) * 100;
+            } else if (propertyOwnership === 'lease') {
+                // For lease, calculate ROI based on initial investment (equipment, renovation, etc.)
+                let initialInvestment = equipmentCost + renovationCost + initialInventory;
+                if (initialInvestment <= 0) {
+                    initialInvestment = 150000; // Default equipment investment
+                }
+                totalROI = ((businessValuation - initialInvestment) / initialInvestment) * 100;
+            }
+            
+            const taxSavings = depreciationBenefit;
+            const vendingROI = vendingRevenue > 0 ? (vendingRevenue / 5000) * 100 : 72; // Default 72% ROI
+            
+            // Update all displays
+            updateResult('breakEvenRevenue', breakEvenRevenue, false, true);
+            updateResult('roiTimeline', roiTimeline);
+            updateResult('recessionScore', recessionScore);
+            updateResult('debtCoverage', debtCoverage);
+            
+            updateResult('tpd', tpd);
+            updateResult('tpw', tpw);
+            updateResult('revenueSqFt', revenueSqFt, false, true);
+            updateResult('capRate', capRate, true);
+            updateResult('cashOnCash', cashOnCash, true);
+            updateResult('pricePerPound', pricePerPound);
+            
+            updateResult('totalStartup', totalStartup, false, true);
+            updateResult('equipmentROI', equipmentROI);
+            updateResult('utilityCostPerLoad', utilityCostPerLoad);
+            updateResult('renovationPerSqFt', renovationPerSqFt, false, true);
+            
+            updateResult('cac', cac, false, true);
+            updateResult('clv', clv, false, true);
+            updateResult('marketingROI', marketingROI);
+            updateResult('loyaltyBreakeven', loyaltyBreakeven, true);
+            
+            updateResult('dropoffMargin', dropoffMargin, true);
+            updateResult('laborPerPound', laborPerPound);
+            updateResult('avgOrderValue', avgOrderValue);
+            updateResult('upsellImpact', upsellImpact, true);
+            
+            updateResult('deliveryPremium', deliveryPremium);
+            updateResult('deliveryCost', deliveryCost);
+            updateResult('avgOrderRevenue', avgOrderRevenue);
+            updateResult('deliveryProfit', deliveryProfit);
+            updateResult('deliveryMargin', deliveryMargin, true);
+            updateResult('costPerPoundDelivered', costPerPoundDelivered);
+            
+            updateResult('contractValue', contractValue, false, true);
+            updateResult('monthlyContractRevenue', monthlyContractRevenue, false, true);
+            updateResult('commercialMargin', commercialMargin, true);
+            updateResult('clientScore', clientScore);
+            
+            updateResult('managerROI', managerROI, true);
+            updateResult('multiLocationPayback', multiLocationPayback);
+            updateResult('portfolioGrowth', portfolioGrowth, true);
+            updateResult('ownerTimeSaved', ownerTimeSaved);
+            
+            updateResult('businessValuation', businessValuation, false, true);
+            updateResult('realEstateAppreciation', realEstateAppreciation, false, true);
+            updateResult('totalROI', totalROI, true);
+            updateResult('taxSavings', taxSavings, false, true);
+            updateResult('vendingROI', vendingROI, true);
+            updateResult('netExitProceeds', netExitProceeds, false, true);
+            
+            // Update status indicators
+            updateStatus('capRate', capRate, 8, 6);
+            updateStatus('cashOnCash', cashOnCash, 15, 10);
+            updateStatus('tpd', tpd, 4, 2.5);
+            updateStatus('dropoffMargin', dropoffMargin, 40, 25);
+            updateStatus('deliveryMargin', deliveryMargin, 25, 15);
+            updateStatus('deliveryProfit', deliveryProfit, 10, 5);
+            updateStatus('deliveryPremium', deliveryPremium, 0.50, 0.30);
+            updateStatus('managerROI', managerROI, 20, 0);
+            updateStatus('totalROI', totalROI, 100, 50);
+        }
+        
+        // Initialize safely
+        window.onload = function() {
+            try {
+                setTimeout(function() {
+                    toggleExitFields();
+                    calculate();
+                }, 200);
+            } catch (error) {
+                console.warn('Initialization error:', error);
+                // Try calculation without field toggling
+                setTimeout(calculate, 300);
+            }
+        };
+    </script>
+</body>
+</html>
